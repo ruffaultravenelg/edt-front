@@ -1,0 +1,49 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 colonnes pour chaque jour */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Styles pour les en-têtes des jours de la semaine */
+.day {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+}
+
+/* Style des événements */
+.event {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    border: 1px solid #388E3C;
+    font-size: 14px;
+}
+
+.event .time {
+    font-weight: bold;
+}
+
+.event .details {
+    margin-top: 5px;
+    font-size: 12px;
+}
