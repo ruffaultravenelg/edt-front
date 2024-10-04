@@ -4,11 +4,14 @@
     box-sizing: border-box;
 }
 body {
-    font-family: Arial, sans-serif;    
-    background-color: whitesmoke;
+    font-family: Arial, sans-serif;
     --point-size: 3px;
+}
+
+section.content{
     background-image: radial-gradient(circle at var(--point-size) var(--point-size), rgb(220, 220, 220) var(--point-size), transparent 0);
-    background-size: 40px 40px;
+    background-size: 40px 40px;  
+    background-color: whitesmoke;
 }
 
 nav{
@@ -27,7 +30,7 @@ nav > div{
     border-radius: 10px;
     padding: 10px;
 }
-h1 {
+nav h1 {
     display: inline-block;
     font-size: 20px;
 }
@@ -55,14 +58,51 @@ nav button:active{
     transform: scale(0.97);
 }
 
+@media (width <= 700px) {
+    nav{
+        position: fixed;
+        background-color: white;
+        border-radius: 10px;
+        bottom: 10px;
+        left: 10px;
+        width: calc(100% - 20px);
+        z-index: 10;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    nav > *{
+        height: 70px !important;
+    }
+    nav > div{
+        border: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    nav h1{
+        font-size: 18px;
+    }
+}
+
 .calendar {
     display: grid;
-    grid-template-columns: repeat(5, minmax(200px, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
+    grid-template-columns: repeat(5, minmax(250px, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
     gap: 10px;
     margin: 0 20px 20px 20px;
     position: relative;
     overflow-x: auto; /* Active le défilement horizontal */
     white-space: nowrap; /* Empêche le contenu de se plier à la ligne */
+}
+
+@media (width <= 700px) {
+    .calendar {
+        grid-template-columns: repeat(5, minmax(80vw, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
+        gap: 10px;
+        margin: 20px 0 20px 20px;
+        padding-right: 20px;
+    }
 }
 
 .day {
@@ -87,6 +127,7 @@ nav button:active{
 }
 
 .event {
+    overflow-y: auto;
     font-weight: normal;
     background-color: rgba(var(--r), var(--g), var(--b), 0.5);
     border: 1px solid #f0f0f0;
@@ -128,7 +169,7 @@ nav button:active{
 }
 .event .time{
     color: rgb(30, 30, 30);
-    font-weight: 11px;
+    font-size: 11px;
     margin-bottom: 3px;
     font-weight: normal;
 }
@@ -153,6 +194,24 @@ nav button:active{
     transform: scale(0.97);
 }
 
+@media (width <= 700px) {
+    .event .title{
+        font-size: 18px;
+    }
+    .event .time{
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    .event .tag-container{
+        gap: 5px;
+        margin-top: 8px;
+    }
+    .event .tag{
+        font-size: 15px;
+    }
+}
+
+
 
 /* FOOTER */
 footer{
@@ -176,7 +235,8 @@ footer a{
 @media (max-width:720px) {
 	footer{
 		flex-direction: column;
-        gap: 15px;
+        gap: 20px;
+        padding-bottom: 150px; /* Pour que le footer soit visible sur mobile avec la barre qui est déjà fixé en bas */
 	}
 	footer p, footer a{
 		text-align: center;
