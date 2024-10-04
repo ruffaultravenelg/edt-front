@@ -4,19 +4,62 @@
     box-sizing: border-box;
 }
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+    font-family: Arial, sans-serif;    
+    background-color: whitesmoke;
+    --point-size: 3px;
+    background-image: radial-gradient(circle at var(--point-size) var(--point-size), rgb(220, 220, 220) var(--point-size), transparent 0);
+    background-size: 40px 40px;
 }
 
-h1 {
+nav{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+}
+nav > div{
     text-align: center;
+    background-color: white;
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 10px;
+    padding: 10px;
+}
+h1 {
+    display: inline-block;
+    font-size: 20px;
+}
+#week_p{
+    margin-top: 3px;
+    font-size: 15px;
+}
+nav button{
+    background-color: #2D4ACA;
+    border: 1px solid #253da9;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition-duration: 0.2s;
+}
+nav button:hover{
+    transform: scale(1.03);
+}
+nav button:active{
+    background-color: #253da9;
+    transform: scale(0.97);
 }
 
 .calendar {
     display: grid;
     grid-template-columns: repeat(5, minmax(200px, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
     gap: 10px;
-    margin-top: 20px;
+    margin: 0 20px 20px 20px;
     position: relative;
     overflow-x: auto; /* Active le défilement horizontal */
     white-space: nowrap; /* Empêche le contenu de se plier à la ligne */
@@ -66,6 +109,16 @@ h1 {
     background-color: red;
     border-radius: 2px;
 }
+.day-content .current:after {
+    content: "";
+    position: absolute;
+    right: -5px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    transform: rotate(45deg);
+}
 
 .event .title{
     color: black;
@@ -98,4 +151,34 @@ h1 {
 
 .event:hover{
     transform: scale(0.97);
+}
+
+
+/* FOOTER */
+footer{
+	height: auto;
+	padding: 30px;
+	background-color: #2D4ACA;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+footer p{
+	font-weight: 400;
+    color: white;
+}
+footer a{
+    cursor: pointer;
+	font-weight: 400;
+    color: white;
+    text-decoration: none;
+}
+@media (max-width:720px) {
+	footer{
+		flex-direction: column;
+        gap: 15px;
+	}
+	footer p, footer a{
+		text-align: center;
+	}
 }

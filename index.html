@@ -8,10 +8,18 @@
 </head>
 <body>
 
-    <h1>Agenda de la semaine</h1>
+    <!-- HEADER NAVIGATION -->
+    <nav>
+        <button id="prev">Avant</button>
+        <div>
+            <h1>Agenda TD21b</h1>
+            <p id="week_p">27/34/2002</p>
+        </div>
+        <button id="next">Après</button>
+    </nav>
 
+    <!-- CALENDAR -->
     <div class="calendar">
-        <!-- En-têtes des jours de la semaine -->
         <div class="day">
             <p class="day-header">Lundi</p>
             <div class="day-content">
@@ -44,8 +52,11 @@
         </div>
     </div>
 
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
+    <!-- FOOTER -->
+    <footer>
+        <p>Gémino Ruffault--Ravenel</p>
+        <a href="https://gemino.dev">gemino.dev</a>
+     </footer>
 
     <script type="module" src="app.js"></script>
 

@@ -18,41 +18,41 @@ fetch('data.json')
  * @param {Date} day - Une date quelconque de la semaine à afficher.
  */
 export function displayWeek(day) {
-    clearCalendar(); // Vider le calendrier actuel avant d'afficher les nouveaux événements
+    clearCalendar(); // Vider le calendrier avant d'afficher les nouveaux événements
 
-    const startDate = getMonday(day); // Déterminer le lundi de la semaine
-    startDate.setDate(startDate.getDate() - 1) //Là franchement jsp
-    const endDate = new Date(startDate); 
-    endDate.setDate(startDate.getDate() + 6); // J'en sais rien non plus
+    // Déterminer le lundi de la semaine et la fin de la semaine (dimanche)
+    const startDate = getMonday(day);
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 4);
+    endDate.setHours(23, 59, 59);
 
-    // Filtrer les événements qui se produisent dans la semaine
+    // Mettre à jour la vue avec la date du début de semaine (lundi)
+    document.getElementById('week_p').textContent = 
+        `${startDate.getDate()}/${startDate.getMonth() + 1}/${startDate.getFullYear()}`;
+
+    // Filtrer et afficher les événements de la semaine
     const weekEvents = allEvents.filter(event => {
         const eventDate = parseDay(event.jour); // Convertir la date de l'événement en objet Date
         return eventDate >= startDate && eventDate <= endDate; // Vérifier si l'événement est dans la semaine
     });
 
-    // Afficher les événements filtrés
-    weekEvents.forEach(event => {
-        displayEvent(event);
-    });
+    // Afficher les événements filtrés dans le calendrier
+    weekEvents.forEach(displayEvent);
 
-    // Affiche la date actuel
+    // Ajouter un indicateur pour la date actuelle, si elle est dans la semaine
     const currentDate = new Date();
-    console.log(currentDate >= startDate);
-    console.log(endDate);
-    
-    console.log(currentDate <= endDate);
-    
-    if (currentDate >= startDate && currentDate <= endDate){
+    if (currentDate >= startDate && currentDate <= endDate) {
+        const dayColumn = document.querySelector('.calendar').children[getDayColumn(currentDate.getDay())];
+        const container = dayColumn.querySelector('.day-content');
         
-        const container = document.querySelector('.calendar').children[getDayColumn(currentDate.getDay())].querySelector('.day-content');
         const line = document.createElement('div');
         line.className = 'current';
         line.style.top = `${((currentDate.getHours() - 8) * 60 + currentDate.getMinutes()) * size}px`;
+        
         container.appendChild(line);
     }
-   
 }
+
 
 /**
  * Convertit une chaîne de caractères au format "DD/MM/YYYY" en objet Date.
@@ -133,19 +133,18 @@ function displayEvent(event) {
 
 
 /**
- * Renvoie la date du lundi de la semaine à partir d'une date donnée.
+ * Renvoie la date correspondant au lundi de la semaine de la date fournie.
  *
- * @param {Date} date - La date pour laquelle on veut trouver le lundi de la semaine.
- * @returns {Date} - La date du lundi de la même semaine.
+ * @param {Date} date - La date à partir de laquelle trouver le lundi de la semaine.
+ * @returns {Date} - La date du lundi de la semaine contenant la date fournie.
  */
 function getMonday(date) {
-    const dayOfWeek = date.getDay(); // 0 pour dimanche, 1 pour lundi, etc.
-    const difference = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Si dimanche (0), on recule de 6 jours, sinon on ajuste en fonction.
-    
-    const monday = new Date(date);
-    monday.setDate(date.getDate() + difference);
-    
-    return monday;
+    const givenDate = new Date(date); // Créer une copie de la date pour éviter les modifications de l'originale
+    const day = givenDate.getDay(); // 0 (dimanche) à 6 (samedi)
+    const distanceFromMonday = (day + 6) % 7; // Calculer la distance entre le jour actuel et le lundi
+    givenDate.setDate(givenDate.getDate() - distanceFromMonday); // Ajuster la date au lundi de la semaine
+    givenDate.setHours(0, 0, 0, 0);
+    return givenDate;
 }
 
 /**
