@@ -1,4 +1,4 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -14,36 +14,88 @@ h1 {
 
 .calendar {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 colonnes pour chaque jour */
+    grid-template-columns: repeat(5, minmax(200px, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
     gap: 10px;
     margin-top: 20px;
+    position: relative;
+    overflow-x: auto; /* Active le défilement horizontal */
+    white-space: nowrap; /* Empêche le contenu de se plier à la ligne */
 }
 
-/* Styles pour les en-têtes des jours de la semaine */
 .day {
-    text-align: center;
-    font-weight: bold;
     padding: 10px;
     background-color: #f0f0f0;
     border: 1px solid #ddd;
+    height: 100%; /* Chaque colonne prend la hauteur complète du calendrier */
+    position: relative;
+    border-radius: 10px;
+    min-width: 200px; /* Largeur minimum pour chaque colonne */
 }
 
-/* Style des événements */
+.day-header{
+    font-size: 22px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.day-content{
+    position: relative;
+    background-color: transparent;
+}
+
 .event {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
-    border: 1px solid #388E3C;
-    font-size: 14px;
-}
-
-.event .time {
-    font-weight: bold;
-}
-
-.event .details {
-    margin-top: 5px;
+    font-weight: normal;
+    background-color: rgba(var(--r), var(--g), var(--b), 0.5);
+    border: 1px solid #f0f0f0;
+    padding: 15px;
     font-size: 12px;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    border-radius: 10px;
+    text-align: left;
+    transition-duration: 0.2s;
+    user-select: none;
+}
+
+.day-content .current{
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: red;
+    border-radius: 2px;
+}
+
+.event .title{
+    color: black;
+    font-weight: bold;
+    font-size: 12px;
+    text-wrap: wrap;
+}
+.event .time{
+    color: rgb(30, 30, 30);
+    font-weight: 11px;
+    margin-bottom: 3px;
+    font-weight: normal;
+}
+.event .tag-container{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+.event .tag{
+    background-color: rgb(var(--r), var(--g), var(--b), 0.5);
+    font-size: 11px;
+    border-radius: 20px;
+    padding: 7px;
+    display: inline-block;
+    color: rgb(30, 30, 30);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.event:hover{
+    transform: scale(0.97);
 }

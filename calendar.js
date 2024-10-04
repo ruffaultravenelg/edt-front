@@ -1,4 +1,5 @@
 let allEvents = []; // Stocker tous les événements
+const size = 1.6;
 
 /**
  * Charge les événements à partir d'un fichier JSON et affiche la semaine actuelle.
@@ -22,7 +23,7 @@ export function displayWeek(day) {
     const startDate = getMonday(day); // Déterminer le lundi de la semaine
     startDate.setDate(startDate.getDate() - 1) //Là franchement jsp
     const endDate = new Date(startDate); 
-    endDate.setDate(startDate.getDate() + 5); // J'en sais rien non plus
+    endDate.setDate(startDate.getDate() + 6); // J'en sais rien non plus
 
     // Filtrer les événements qui se produisent dans la semaine
     const weekEvents = allEvents.filter(event => {
@@ -35,6 +36,22 @@ export function displayWeek(day) {
         displayEvent(event);
     });
 
+    // Affiche la date actuel
+    const currentDate = new Date();
+    console.log(currentDate >= startDate);
+    console.log(endDate);
+    
+    console.log(currentDate <= endDate);
+    
+    if (currentDate >= startDate && currentDate <= endDate){
+        
+        const container = document.querySelector('.calendar').children[getDayColumn(currentDate.getDay())].querySelector('.day-content');
+        const line = document.createElement('div');
+        line.className = 'current';
+        line.style.top = `${((currentDate.getHours() - 8) * 60 + currentDate.getMinutes()) * size}px`;
+        container.appendChild(line);
+    }
+   
 }
 
 /**
@@ -52,35 +69,68 @@ function parseDay(dateString) {
  * Affiche un événement sur l'interface en fonction de ses données.
  * 
  * @param {Object} event - L'événement à afficher.
+ * @param {string} event.guid - Identifiant de l'événement.
  * @param {string} event.titre - Le titre de l'événement.
- * @param {string} event.heure_debut - L'heure de début de l'événement.
- * @param {string} event.heure_fin - L'heure de fin de l'événement.
+ * @param {string} event.heure_debut - L'heure de début de l'événement (format "HH:MM").
+ * @param {string} event.heure_fin - L'heure de fin de l'événement (format "HH:MM").
  * @param {string} event.professeur - Le nom du professeur responsable.
  * @param {string} event.salle - Le lieu où se déroule l'événement.
  * @param {string} event.jour - Le jour de l'événement au format "DD/MM/YYYY".
  */
 function displayEvent(event) {
-    // Créer un élément pour l'événement
     const eventElement = document.createElement('div');
     eventElement.classList.add('event');
 
-    // Ajouter les détails de l'événement à l'élément
+    // Set event color
+    const { r, g, b } = stringToColor(event.titre);
+    eventElement.style.setProperty('--r', r);
+    eventElement.style.setProperty('--g', g);
+    eventElement.style.setProperty('--b', b);
+
+    // Ajouter les détails de l'événement
     eventElement.innerHTML = `
-        <div class="time">${event.heure_debut} - ${event.heure_fin}</div>
-        <div class="details">
-            <strong>${event.titre}</strong><br>
-            ${event.professeur}<br>
-            Salle : ${event.salle}
-        </div>
+        <p class="time">${event.heure_debut} - ${event.heure_fin}</p>
+        <p class="title">${event.titre}</p>
+        <div class="tag-container"></div>
     `;
 
-    // Obtenir la colonne correspondant au jour de l'événement (lundi = 0, mardi = 1, etc.)
+    if (event.salle)
+        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.salle}</p>`;
+    if (event.professeur)
+        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.professeur}</p>`;
+
+
     const eventDate = parseDay(event.jour);
     const dayColumn = getDayColumn(eventDate.getDay());
 
-    // Ajouter l'événement à la colonne appropriée
-    document.querySelector('.calendar').children[dayColumn].appendChild(eventElement);
+    // Calculer la position en fonction de l'heure de début
+    const [startHour, startMinute] = event.heure_debut.split(':').map(Number);
+    const [endHour, endMinute] = event.heure_fin.split(':').map(Number);
+
+    // Convertir l'heure en pixels dans l'échelle (chaque heure = 60px)
+    const topPosition = size * (((startHour - 8) * 60) + (startMinute)); // Distance en pixels depuis 8h
+    const eventDuration = size * (((endHour - startHour) * 60) + (endMinute - startMinute)); // Durée de l'événement en minutes
+
+    // Appliquer la position et la hauteur
+    eventElement.style.top = `${Math.floor(topPosition)}px`;
+    eventElement.style.height = `${Math.floor(eventDuration)}px`;
+
+    // set event container size
+    const container = document.querySelector('.calendar').children[dayColumn].querySelector('.day-content');
+    const pixelSize = (60 * (19 - 8)) * size;
+    container.style.height = `${pixelSize}px`;
+
+    // Add object
+    container.appendChild(eventElement);
+    
+    // Fix padding
+    const computedStyle = window.getComputedStyle(eventElement, null);
+    const padding = parseInt(computedStyle.getPropertyValue('padding'));
+    const borderWidth = parseInt(computedStyle.getPropertyValue('border-width'));
+    eventElement.style.height = Math.floor(topPosition) - (2 * padding) - (2 * borderWidth); // -2 pour les bordures 
+
 }
+
 
 /**
  * Renvoie la date du lundi de la semaine à partir d'une date donnée.
@@ -119,10 +169,44 @@ function getDayColumn(day) {
  * Vide le calendrier en supprimant tous les événements actuellement affichés.
  */
 function clearCalendar() {
-    const days = document.querySelectorAll('.calendar .day');
+    const days = document.querySelectorAll('.calendar .day .day-content');
     days.forEach(day => {
         while (day.children.length > 0) { // On ne supprime pas le titre du jour
             day.removeChild(day.lastChild);
         }
     });
+}
+
+/**
+ * Génère une couleur aléatoire basée sur une seed (graine) et qui est suffisamment sombre pour un texte blanc lisible.
+ * 
+ * @param {string} seed - La graine utilisée pour générer la couleur.
+ * @returns {object} - La couleur sous la forme d'un objet {r, g, b}.
+ */
+function stringToColor(seed) {
+
+    // Fonction pour transformer un caractère en code numérique
+    function hashCode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return hash;
+    }
+
+    // Convertir la seed en une valeur numérique
+    let hash = hashCode(seed);
+
+    // Convertir le hash en valeurs RGB
+    let r = (hash & 0xFF0000) >> 16;
+    let g = (hash & 0x00FF00) >> 8;
+    let b = (hash & 0x0000FF);
+
+    // Assurer que la couleur soit sombre en réduisant les valeurs RGB
+    r = Math.floor((r + 255) / 2);
+    g = Math.floor((g + 255) / 2);
+    b = Math.floor((b + 255) / 2);
+
+    // Retourner la couleur sous forme hexadécimale
+    return {r, g, b};
 }
