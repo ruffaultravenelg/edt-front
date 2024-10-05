@@ -4,19 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
     <section class="content">
         <!-- HEADER NAVIGATION -->
         <nav>
-            <button id="prev">Avant</button>
+            <button id="prev">
+                <img src="ressources/back.svg" alt="Semaine précédente">
+                <span>Précédent</span>
+            </button>
             <div>
                 <h1>Agenda TD21b</h1>
                 <p id="week_p">27/34/2002</p>
             </div>
-            <button id="next">Après</button>
+            <button id="next">
+                <img src="ressources/next.svg" alt="Semaine suivante">
+                <span>Suivant</span>
+            </button>
         </nav>
 
 
@@ -62,7 +68,7 @@
         <a href="https://gemino.dev">gemino.dev</a>
      </footer>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="scripts/app.js"></script>
 
 </body>
 </html>

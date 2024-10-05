@@ -5,10 +5,10 @@
 }
 body {
     font-family: Arial, sans-serif;
-    --point-size: 3px;
 }
 
 section.content{
+    --point-size: 3px;
     background-image: radial-gradient(circle at var(--point-size) var(--point-size), rgb(220, 220, 220) var(--point-size), transparent 0);
     background-size: 40px 40px;  
     background-color: whitesmoke;
@@ -41,14 +41,17 @@ nav h1 {
 nav button{
     background-color: #2D4ACA;
     border: 1px solid #253da9;
-    color: white;
-    font-size: 16px;
     outline: none;
     border: none;
     padding: 12px 30px;
     border-radius: 10px;
     cursor: pointer;
     transition-duration: 0.2s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 nav button:hover{
     transform: scale(1.03);
@@ -56,6 +59,14 @@ nav button:hover{
 nav button:active{
     background-color: #253da9;
     transform: scale(0.97);
+}
+nav button span{
+    color: white;
+    font-size: 16px;
+}
+nav button img{
+    width: 20px;
+    height: 20px;
 }
 
 @media (width <= 700px) {
@@ -69,6 +80,7 @@ nav button:active{
         z-index: 10;
         justify-content: space-between;
         gap: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
     nav > *{
         height: 70px !important;
@@ -84,13 +96,21 @@ nav button:active{
     nav h1{
         font-size: 18px;
     }
+    nav > button > span{
+        display: none;
+    }
+    nav > button > img{
+        display: initial !important;
+        width: 30px;
+        height: 30px;
+    }
 }
 
 .calendar {
     display: grid;
     grid-template-columns: repeat(5, minmax(250px, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
     gap: 10px;
-    margin: 0 20px 20px 20px;
+    padding: 0 20px 20px 20px;
     position: relative;
     overflow-x: auto; /* Active le défilement horizontal */
     white-space: nowrap; /* Empêche le contenu de se plier à la ligne */
@@ -99,9 +119,8 @@ nav button:active{
 @media (width <= 700px) {
     .calendar {
         grid-template-columns: repeat(5, minmax(80vw, 1fr)); /* Chaque colonne a une largeur minimum de 150px */
+        padding: 20px;
         gap: 10px;
-        margin: 20px 0 20px 20px;
-        padding-right: 20px;
     }
 }
 
@@ -119,11 +138,13 @@ nav button:active{
     font-size: 22px;
     margin: 20px 0;
     text-align: center;
+    user-select: none;
 }
 
 .day-content{
     position: relative;
     background-color: transparent;
+    min-height: 100vh;
 }
 
 .event {
@@ -196,7 +217,7 @@ nav button:active{
 
 @media (width <= 700px) {
     .event .title{
-        font-size: 18px;
+        font-size: 16px;
     }
     .event .time{
         font-size: 14px;
@@ -210,8 +231,6 @@ nav button:active{
         font-size: 15px;
     }
 }
-
-
 
 /* FOOTER */
 footer{

@@ -8,7 +8,7 @@ Le frontend a été développé en **HTML**, **CSS**, et **JavaScript** dans le 
 
 ## 🔗 Backend
 
-Le frontend récupère ses données à partir du backend Python, accessible dans un [dépôt distinct](https://github.com/ruffaultravenelg/planning_fetcher). Ce backend est responsable de :
+Le frontend récupère ses données à partir du backend Python, accessible dans un [dépôt distinct](https://github.com/ruffaultravenelg/edt-back). Ce backend est responsable de :
 
 - La collecte et de l'analyse quotidienne de l'emploi du temps.
 - L'automatisation via une tâche cron exécutée sur un serveur.
@@ -18,11 +18,11 @@ Le frontend récupère ses données à partir du backend Python, accessible dans
 
 ### Emploi du temps par défaut de l'ENT
 
-![Emploi du temps classique](old.png)
+![Emploi du temps classique](ressources\old.png)
 
 ### Frontend custom
 
-![Emploi du temps amélioré](new.png)
+![Emploi du temps amélioré](ressources\new.png)
 
 ## 📄 Licence
 

@@ -4,7 +4,7 @@ const size = 1.6;
 /**
  * Charge les événements à partir d'un fichier JSON et affiche la semaine actuelle.
  */
-fetch('data.json')
+fetch('ressources/data.json', { cache: 'no-cache' })
     .then(response => response.json())
     .then(data => {
         allEvents = data; // Stocker toutes les données
@@ -131,19 +131,27 @@ function displayEvent(event) {
 
 }
 
-
 /**
  * Renvoie la date correspondant au lundi de la semaine de la date fournie.
+ * Si la date est un samedi ou un dimanche, renvoie le lundi de la semaine suivante.
  *
  * @param {Date} date - La date à partir de laquelle trouver le lundi de la semaine.
- * @returns {Date} - La date du lundi de la semaine contenant la date fournie.
+ * @returns {Date} - La date du lundi de la semaine ou de la semaine suivante si c'est un samedi ou un dimanche.
  */
 function getMonday(date) {
     const givenDate = new Date(date); // Créer une copie de la date pour éviter les modifications de l'originale
-    const day = givenDate.getDay(); // 0 (dimanche) à 6 (samedi)
-    const distanceFromMonday = (day + 6) % 7; // Calculer la distance entre le jour actuel et le lundi
-    givenDate.setDate(givenDate.getDate() - distanceFromMonday); // Ajuster la date au lundi de la semaine
-    givenDate.setHours(0, 0, 0, 0);
+    let day = givenDate.getDay(); // 0 (dimanche) à 6 (samedi)
+    
+    // Si le jour est samedi (6) ou dimanche (0), on ajuste vers le lundi de la semaine suivante
+    if (day === 6 || day === 0) {
+        const daysUntilNextMonday = 8 - day; // Calculer le nombre de jours jusqu'au lundi prochain
+        givenDate.setDate(givenDate.getDate() + daysUntilNextMonday);
+    } else {
+        const distanceFromMonday = (day + 6) % 7; // Calculer la distance entre le jour actuel et le lundi
+        givenDate.setDate(givenDate.getDate() - distanceFromMonday); // Ajuster la date au lundi de la semaine
+    }
+    
+    givenDate.setHours(0, 0, 0, 0); // Réinitialiser les heures
     return givenDate;
 }
 
