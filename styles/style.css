@@ -132,6 +132,7 @@ nav button img{
     position: relative;
     border-radius: 10px;
     min-width: 200px; /* Largeur minimum pour chaque colonne */
+    overflow-y: hidden;
 }
 
 .day-header{

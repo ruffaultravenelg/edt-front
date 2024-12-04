@@ -18,11 +18,11 @@ Le frontend récupère ses données à partir du backend Python, accessible dans
 
 ### Emploi du temps par défaut de l'ENT
 
-![Emploi du temps classique](ressources\old.png)
+![Emploi du temps classique](ressources/old.png)
 
 ### Frontend custom
 
-![Emploi du temps amélioré](ressources\new.png)
+![Emploi du temps amélioré](ressources/new.png)
 
 ## 📄 Licence
 
