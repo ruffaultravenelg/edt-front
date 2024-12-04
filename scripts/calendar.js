@@ -18,7 +18,9 @@ fetch('ressources/data.json', { cache: 'no-cache' })
  * @param {Date} day - Une date quelconque de la semaine à afficher.
  */
 export function displayWeek(day) {
-    clearCalendar(); // Vider le calendrier avant d'afficher les nouveaux événements
+
+    // Vider le calendrier avant d'afficher les nouveaux événements
+    clearCalendar();
 
     // Déterminer le lundi de la semaine et la fin de la semaine (dimanche)
     const startDate = getMonday(day);
@@ -32,7 +34,7 @@ export function displayWeek(day) {
 
     // Filtrer et afficher les événements de la semaine
     const weekEvents = allEvents.filter(event => {
-        const eventDate = parseDay(event.jour); // Convertir la date de l'événement en objet Date
+        const eventDate = parseDay(event.date); // Convertir la date de l'événement en objet Date
         return eventDate >= startDate && eventDate <= endDate; // Vérifier si l'événement est dans la semaine
     });
 
@@ -70,42 +72,46 @@ function parseDay(dateString) {
  * 
  * @param {Object} event - L'événement à afficher.
  * @param {string} event.guid - Identifiant de l'événement.
- * @param {string} event.titre - Le titre de l'événement.
- * @param {string} event.heure_debut - L'heure de début de l'événement (format "HH:MM").
- * @param {string} event.heure_fin - L'heure de fin de l'événement (format "HH:MM").
- * @param {string} event.professeur - Le nom du professeur responsable.
- * @param {string} event.salle - Le lieu où se déroule l'événement.
- * @param {string} event.jour - Le jour de l'événement au format "DD/MM/YYYY".
+ * @param {string} event.title - Le titre de l'événement.
+ * @param {string} event.start_time - L'heure de début de l'événement (format "HH:MM").
+ * @param {string} event.end_time - L'heure de fin de l'événement (format "HH:MM").
+ * @param {string} event.professor - Le nom du professeur responsable.
+ * @param {string} event.room - Le lieu où se déroule l'événement.
+ * @param {string} event.date - Le jour de l'événement au format "DD/MM/YYYY".
+ * @param {string} event.type - Le type de cours (TD, TDm, TP, CM).
  */
 function displayEvent(event) {
+
+    // Créer un élément pour l'événement
     const eventElement = document.createElement('div');
     eventElement.classList.add('event');
 
     // Set event color
-    const { r, g, b } = stringToColor(event.titre);
+    const { r, g, b } = stringToColor(event.title);
     eventElement.style.setProperty('--r', r);
     eventElement.style.setProperty('--g', g);
     eventElement.style.setProperty('--b', b);
 
     // Ajouter les détails de l'événement
     eventElement.innerHTML = `
-        <p class="time">${event.heure_debut} - ${event.heure_fin}</p>
-        <p class="title">${event.titre}</p>
+        <p class="time">${event.start_time} - ${event.end_time}</p>
+        <p class="title">${event.title}</p>
         <div class="tag-container"></div>
     `;
 
-    if (event.salle)
-        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.salle}</p>`;
-    if (event.professeur)
-        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.professeur}</p>`;
+    if (event.room)
+        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.room}</p>`;
+    if (event.professor)
+        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.professor}</p>`;
+    if (event.type)
+        eventElement.querySelector('.tag-container').innerHTML += `<p class="tag">${event.type}</p>`;
 
-
-    const eventDate = parseDay(event.jour);
+    const eventDate = parseDay(event.date);
     const dayColumn = getDayColumn(eventDate.getDay());
 
     // Calculer la position en fonction de l'heure de début
-    const [startHour, startMinute] = event.heure_debut.split(':').map(Number);
-    const [endHour, endMinute] = event.heure_fin.split(':').map(Number);
+    const [startHour, startMinute] = event.start_time.split(':').map(Number);
+    const [endHour, endMinute] = event.end_time.split(':').map(Number);
 
     // Convertir l'heure en pixels dans l'échelle (chaque heure = 60px)
     const topPosition = size * (((startHour - 8) * 60) + (startMinute)); // Distance en pixels depuis 8h
