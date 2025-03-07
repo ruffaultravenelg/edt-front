@@ -1,5 +1,8 @@
 let allEvents = []; // Stocker tous les événements
 const size = 1.6;
+let currentInterval; // Pour stocker l'ID de l'intervalle
+window.currentStartDate = null;
+window.currentEndDate = null;
 
 /**
  * Charge les événements à partir d'un fichier JSON et affiche la semaine actuelle.
@@ -10,6 +13,12 @@ fetch('ressources/data.json', { cache: 'no-cache' })
         allEvents = data; // Stocker toutes les données
         const today = new Date(); // Obtenir la date d'aujourd'hui
         displayWeek(today); // Afficher les événements de la semaine en cours
+
+        // Met à jour l'indicateur de l'heure actuelle toutes les 5 minutes
+        if (currentInterval) {
+            clearInterval(currentInterval);
+        }
+        currentInterval = setInterval(updateCurrentIndicator, 300000); // 300000 ms = 5 minutes
     });
 
 /**
@@ -22,11 +31,15 @@ export function displayWeek(day) {
     // Vider le calendrier avant d'afficher les nouveaux événements
     clearCalendar();
 
-    // Déterminer le lundi de la semaine et la fin de la semaine (dimanche)
+    // Déterminer le lundi de la semaine et la fin de la semaine (vendredi)
     const startDate = getMonday(day);
     const endDate = new Date(startDate);
     endDate.setDate(startDate.getDate() + 4);
     endDate.setHours(23, 59, 59);
+
+    // Stocker les dates dans des variables globales pour updateCurrentIndicator
+    window.currentStartDate = startDate;
+    window.currentEndDate = endDate;
 
     // Mettre à jour la vue avec la date du début de semaine (lundi)
     document.getElementById('week_p').textContent = 
@@ -41,20 +54,36 @@ export function displayWeek(day) {
     // Afficher les événements filtrés dans le calendrier
     weekEvents.forEach(displayEvent);
 
-    // Ajouter un indicateur pour la date actuelle, si elle est dans la semaine
+    // Ajouter l'indicateur de la date actuelle
+    updateCurrentIndicator();
+}
+
+/**
+ * Met à jour l'indicateur de l'heure actuelle dans le calendrier.
+ * Il supprime l'ancien indicateur (s'il existe) et en crée un nouveau avec la position actuelle.
+ */
+function updateCurrentIndicator() {
+    // Supprimer l'ancien indicateur s'il existe
+    const oldIndicator = document.getElementById('current-indicator');
+    if (oldIndicator) {
+        oldIndicator.remove();
+    }
+    
     const currentDate = new Date();
-    if (currentDate >= startDate && currentDate <= endDate) {
+    // Vérifier si la date actuelle est dans la semaine affichée
+    if (window.currentStartDate && window.currentEndDate &&
+        currentDate >= window.currentStartDate && currentDate <= window.currentEndDate) {
         const dayColumn = document.querySelector('.calendar').children[getDayColumn(currentDate.getDay())];
         const container = dayColumn.querySelector('.day-content');
         
         const line = document.createElement('div');
         line.className = 'current';
+        line.id = 'current-indicator';
         line.style.top = `${((currentDate.getHours() - 8) * 60 + currentDate.getMinutes()) * size}px`;
         
         container.appendChild(line);
     }
 }
-
 
 /**
  * Convertit une chaîne de caractères au format "DD/MM/YYYY" en objet Date.
@@ -86,7 +115,7 @@ function displayEvent(event) {
     const eventElement = document.createElement('div');
     eventElement.classList.add('event');
 
-    // Set event color
+    // Définir la couleur de l'événement
     const { r, g, b } = stringToColor(event.title);
     eventElement.style.setProperty('--r', r);
     eventElement.style.setProperty('--g', g);
@@ -121,20 +150,19 @@ function displayEvent(event) {
     eventElement.style.top = `${Math.floor(topPosition)}px`;
     eventElement.style.height = `${Math.floor(eventDuration)}px`;
 
-    // set event container size
+    // Définir la taille du conteneur de l'événement
     const container = document.querySelector('.calendar').children[dayColumn].querySelector('.day-content');
     const pixelSize = (60 * (19 - 8)) * size;
     container.style.height = `${pixelSize}px`;
 
-    // Add object
+    // Ajouter l'élément au conteneur
     container.appendChild(eventElement);
     
-    // Fix padding
+    // Ajuster la hauteur en fonction du padding et des bordures
     const computedStyle = window.getComputedStyle(eventElement, null);
     const padding = parseInt(computedStyle.getPropertyValue('padding'));
     const borderWidth = parseInt(computedStyle.getPropertyValue('border-width'));
     eventElement.style.height = Math.floor(topPosition) - (2 * padding) - (2 * borderWidth); // -2 pour les bordures 
-
 }
 
 /**
