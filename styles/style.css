@@ -173,10 +173,10 @@ nav button img{
     height: 100%;
     background: repeating-linear-gradient(
         -45deg, 
-        rgba(255, 0, 0, 0.1) 0px, 
-        rgba(255, 0, 0, 0.1) 5px, 
-        rgba(255, 0, 0, 0.2) 5px, 
-        rgba(255, 0, 0, 0.2) 10px
+        transparent 0px, 
+        transparent 15px, 
+        rgba(255, 0, 0, 0.3) 15px, 
+        rgba(255, 0, 0, 0.3) 25px
     );
     pointer-events: none; /* Pour ne pas bloquer les interactions */
 }
