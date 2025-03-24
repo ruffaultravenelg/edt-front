@@ -164,9 +164,6 @@ nav button img{
     user-select: none;
 }
 
-.eval {
-    position: relative;
-}
 .eval::after {
     content: "";
     position: absolute;
