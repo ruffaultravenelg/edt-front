@@ -1,4 +1,3 @@
-let allEvents = []; // Stocker tous les événements
 const size = 1.6;
 let currentInterval; // Pour stocker l'ID de l'intervalle
 window.currentStartDate = null;
@@ -7,19 +6,23 @@ window.currentEndDate = null;
 /**
  * Charge les événements à partir d'un fichier JSON et affiche la semaine actuelle.
  */
-fetch('ressources/data.json', { cache: 'no-cache' })
-    .then(response => response.json())
-    .then(data => {
-        allEvents = data; // Stocker toutes les données
-        const today = new Date(); // Obtenir la date d'aujourd'hui
-        displayWeek(today); // Afficher les événements de la semaine en cours
+const dataResponse = await fetch('ressources/data.json', { cache: 'no-cache' });
+const allEvents = await dataResponse.json();
 
-        // Met à jour l'indicateur de l'heure actuelle toutes les 5 minutes
-        if (currentInterval) {
-            clearInterval(currentInterval);
-        }
-        currentInterval = setInterval(updateCurrentIndicator, 300000); // 300000 ms = 5 minutes
-    });
+const evalResponse = await fetch('ressources/eval.json', { cache: 'no-cache' });
+const evalData = await evalResponse.json();
+
+(()=>{
+    const today = new Date(); // Obtenir la date d'aujourd'hui
+    displayWeek(today); // Afficher les événements de la semaine en cours
+    
+    // Met à jour l'indicateur de l'heure actuelle toutes les 5 minutes
+    if (currentInterval) {
+        clearInterval(currentInterval);
+    }
+    currentInterval = setInterval(updateCurrentIndicator, 300000); // 300000 ms = 5 minutes
+})();
+
 
 /**
  * Affiche les événements pour la semaine contenant la date spécifiée.
@@ -162,7 +165,17 @@ function displayEvent(event) {
     const computedStyle = window.getComputedStyle(eventElement, null);
     const padding = parseInt(computedStyle.getPropertyValue('padding'));
     const borderWidth = parseInt(computedStyle.getPropertyValue('border-width'));
-    eventElement.style.height = Math.floor(topPosition) - (2 * padding) - (2 * borderWidth); // -2 pour les bordures 
+    eventElement.style.height = Math.floor(topPosition) - (2 * padding) - (2 * borderWidth); // -2 pour les bordures
+
+    // Vérifier si l'événement est dans la liste des évaluations
+    const isEval = evalData.some(evalEvent => 
+        evalEvent.date === event.date && evalEvent.start_time === event.start_time
+    );
+
+    if (isEval) {
+        eventElement.classList.add('eval');
+    }
+
 }
 
 /**
